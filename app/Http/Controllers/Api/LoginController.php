@@ -12,13 +12,13 @@ class LoginController extends Controller
 {
     public function __invoke(LoginRequest $request, LoginService $loginService): JsonResponse
     {
-        // Получаем проверенные email и password
+        // Obtain the verified email and password.
         $validatedData = $request->validated();
 
-        // Вызываем и потом проверка и генерация токена
+        // We make the call, followed by validation and token generation.
         $accessToken = $loginService->execute($validatedData);
 
-        // Возвращаем JSON
+        // return JSON
         return response()->json([
             'accessToken' => $accessToken,
         ]);

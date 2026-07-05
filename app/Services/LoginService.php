@@ -10,10 +10,10 @@ class LoginService
 {
     public function execute(array $credentials): string
     {
-        // Находим по email в БД
+        // Find with email in database
         $user = User::where('email', $credentials['email'])->first();
 
-        // Не совпадает с хэшем в БД
+        // Does not match the hash in the database.
         if (!$user || !Hash::check($credentials['password'], $user->password))
         {
             throw ValidationException::withMessages([
@@ -21,10 +21,10 @@ class LoginService
             ]);
         }
 
-        // Генерируем токен
+        // Generating a token
         $tokenResult = $user->createToken('mobile_app');
 
-        // Для передачи клиенту
+        // For return to the client
         return $tokenResult->plainTextToken;
     }
 }
