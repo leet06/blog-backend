@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\LoginController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\Api\IndexPostController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -13,3 +14,4 @@ use App\Http\Controllers\PostController;
 Route::post('/login', LoginController::class);
 Route::post('/register', RegisterController::class);
 Route::middleware('auth:sanctum')->post('/posts', PostController::class);
+Route::get('/posts', IndexPostController::class);
