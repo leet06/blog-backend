@@ -46,4 +46,47 @@ class PostService
             ->offset($offset)
             ->get();
     }
+
+    public function getUserFilteredList(\App\Models\User $user, array $params): array
+    {
+        // Selection of posts from a specific user only
+        $query = $user->posts();
+
+        // Filter by "from" date
+        if (!empty($params['date_from']))
+        {
+            $query->whereDate('created_at', '>=', $params['date_from']);
+        }
+
+        // Filter by "to" date
+        if (!empty($params['date_to']))
+        {
+            $query->whereDate('created_at', '<=', $params['date_to']);
+        }
+
+        // Sort
+        $sortBy = $params['sort_by'] ?? 'created_at';
+        $sortDirection = $params['sort_direction'] ?? 'desc';
+        $query->orderBy($sortBy, $sortDirection);
+
+        // Pagination
+        $limit = $params['limit'] ?? 10;
+        $offset = $params['offset'] ?? 0;
+
+        $posts = $query->limit($limit)
+            ->offset($offset)
+            ->get();
+
+        // Data submission and processing logic
+        return $posts->map(function ($post)
+        {
+            return [
+                'id' => $post->id,
+                'title' => $post->title,
+                'text' => $post->text,
+                'user_id' => $post->user_id,
+                'created_at' => $post->created_at,
+            ];
+        })->toArray();
+    }
 }
