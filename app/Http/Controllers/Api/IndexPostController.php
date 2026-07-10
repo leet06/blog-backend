@@ -16,21 +16,9 @@ class IndexPostController extends Controller
 
         $posts = $postService->getFilteredList($params);
 
-        // Serialize the list of publications into an array with the required structure.
-        $responseData = $posts->map(function ($post)
-        {
-            return [
-                'id' => $post->id,
-                'title' => $post->title,
-                'text' => $post->text,
-                'user_id' => $post->user_id,
-                'created_at' => $post->created_at,
-            ];
-        });
-
         return response()->json([
-            'posts' => $responseData,
-            'count' => $posts->count(),
+            'posts' => $posts,
+            'count' => count($posts),
         ]);
     }
 }

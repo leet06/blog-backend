@@ -89,7 +89,7 @@ class PostService
         })->toArray();
     }
 
-    public function getFilteredList(array $params): Collection
+    public function getFilteredList(array $params): array
     {
         $query = Post::query();
 
@@ -114,9 +114,20 @@ class PostService
         $limit = $params['limit'] ?? 10;
         $offset = $params['offset'] ?? 0;
 
-        return $query->limit($limit)
+        $posts = $query->limit($limit)
             ->offset($offset)
             ->get();
+        
+        return $posts->map(function ($post)
+        {
+            return [
+                'id' => $post->id,
+                'title' => $post->title,
+                'text' => $post->text,
+                'user_id' => $post->user_id,
+                'created_at' => $post->created_at,
+            ];
+        })->toArray();
     }
 
     public function getUserFilteredList(\App\Models\User $user, array $params): array
