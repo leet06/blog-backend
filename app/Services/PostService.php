@@ -17,6 +17,19 @@ class PostService
         ]);
     }
 
+    private function formatPosts(Collection $posts): array
+    {
+        return $posts->map(function ($post) {
+            return [
+                'id' => $post->id,
+                'title' => $post->title,
+                'text' => $post->text,
+                'user_id' => $post->user_id,
+                'created_at' => $post->created_at,
+            ];
+        })->toArray();
+    }
+
     public function getFilteredList(array $params): array
     {
         $query = Post::query();
@@ -45,17 +58,8 @@ class PostService
         $posts = $query->limit($limit)
             ->offset($offset)
             ->get();
-        
-        return $posts->map(function ($post)
-        {
-            return [
-                'id' => $post->id,
-                'title' => $post->title,
-                'text' => $post->text,
-                'user_id' => $post->user_id,
-                'created_at' => $post->created_at,
-            ];
-        })->toArray();
+
+        return $this->formatPosts($posts);
     }
 
     public function getUserFilteredList(\App\Models\User $user, array $params): array
@@ -88,16 +92,6 @@ class PostService
             ->offset($offset)
             ->get();
 
-        // Data submission and processing logic
-        return $posts->map(function ($post)
-        {
-            return [
-                'id' => $post->id,
-                'title' => $post->title,
-                'text' => $post->text,
-                'user_id' => $post->user_id,
-                'created_at' => $post->created_at,
-            ];
-        })->toArray();
+        return $this->formatPosts($posts);
     }
 }

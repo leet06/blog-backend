@@ -4,7 +4,7 @@ use App\Http\Controllers\Api\LoginController;
 // use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RegisterController;
-use App\Http\Controllers\PostController;
+use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\IndexPostController;
 use App\Http\Controllers\Api\MyPostController;
 
