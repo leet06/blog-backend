@@ -89,6 +89,19 @@ class PostService
         })->toArray();
     }
 
+    private function formatPosts(Collection $posts): array
+    {
+        return $posts->map(function ($post) {
+            return [
+                'id' => $post->id,
+                'title' => $post->title,
+                'text' => $post->text,
+                'user_id' => $post->user_id,
+                'created_at' => $post->created_at,
+            ];
+        })->toArray();
+    }
+
     public function getFilteredList(array $params): array
     {
         $query = Post::query();
@@ -117,42 +130,31 @@ class PostService
         $posts = $query->limit($limit)
             ->offset($offset)
             ->get();
-        
-        return $posts->map(function ($post)
-        {
-            return [
-                'id' => $post->id,
-                'title' => $post->title,
-                'text' => $post->text,
-                'user_id' => $post->user_id,
-                'created_at' => $post->created_at,
-            ];
-        })->toArray();
+
+        return $this->formatPosts($posts);
     }
 
-    public function getUserFilteredList(\App\Models\User $user, array $params): array
+    public function getFilteredList(array $params, ?User $user = null): array
     {
-        // Selection of posts from a specific user only
-        $query = $user->posts();
+        // If a user is provided, we take only their posts; otherwise, we take all posts.
+        $query = $user ? $user->posts() : Post::query();
 
         // Filter by "from" date
-        if (!empty($params['date_from']))
-        {
+        if (!empty($params['date_from'])) {
             $query->whereDate('created_at', '>=', $params['date_from']);
         }
 
-        // Filter by "to" date
-        if (!empty($params['date_to']))
-        {
+        // Filter by "before" date
+        if (!empty($params['date_to'])) {
             $query->whereDate('created_at', '<=', $params['date_to']);
         }
 
-        // Sort
+        // Dynamic sorting (newest at the top by default)
         $sortBy = $params['sort_by'] ?? 'created_at';
         $sortDirection = $params['sort_direction'] ?? 'desc';
         $query->orderBy($sortBy, $sortDirection);
 
-        // Pagination
+        // Chunking (pagination via limit/offset)
         $limit = $params['limit'] ?? 10;
         $offset = $params['offset'] ?? 0;
 
@@ -160,16 +162,6 @@ class PostService
             ->offset($offset)
             ->get();
 
-        // Data submission and processing logic
-        return $posts->map(function ($post)
-        {
-            return [
-                'id' => $post->id,
-                'title' => $post->title,
-                'text' => $post->text,
-                'user_id' => $post->user_id,
-                'created_at' => $post->created_at,
-            ];
-        })->toArray();
+        return $this->formatPosts($posts);
     }
 }
