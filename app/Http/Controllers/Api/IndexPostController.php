@@ -14,6 +14,7 @@ class IndexPostController extends Controller
     {
         $params = $request->validated();
 
+        // Call the universal method (without passing the user).
         $posts = $postService->getFilteredList($params);
 
         return response()->json([
