@@ -15,78 +15,6 @@ class PostService
             'title' => $data['title'],
             'text' => $data['text'],
         ]);
-
-        // The logic for data submission and processing
-        return [
-            'id' => $post->id,
-            'title' => $post->title,
-            'text' => $post->text,
-            'user_id' => $post->user_id,
-            'created_at' => $post->created_at,
-        ];
-    }
-    
-    public function getFilteredList(array $params): Collection
-    {
-        $query = Post::query();
-
-        if (!empty($params['date_from']))
-        {
-            $query->whereDate('created_at', '>=', $params['date_from']);
-        }
-
-        if (!empty($params['date_to']))
-        {
-            $query->whereDate('created_at', '<=', $params['date_to']);
-        }
-
-        $sortBy = $params['sort_by'] ?? 'created_at';
-        $sortDirection = $params['sort_direction'] ?? 'desc';
-        $query->orderBy($sortBy, $sortDirection);
-
-        $limit = $params['limit'] ?? 10;
-        $offset = $params['offset'] ?? 0;
-
-        return $query->limit($limit)
-            ->offset($offset)
-            ->get();
-    }
-
-    public function getUserFilteredList(\App\Models\User $user, array $params): array
-    {
-        $query = $user->posts();
-
-        if (!empty($params['date_from']))
-        {
-            $query->whereDate('created_at', '>=', $params['date_from']);
-        }
-
-        if (!empty($params['date_to']))
-        {
-            $query->whereDate('created_at', '<=', $params['date_to']);
-        }
-
-        $sortBy = $params['sort_by'] ?? 'created_at';
-        $sortDirection = $params['sort_direction'] ?? 'desc';
-        $query->orderBy($sortBy, $sortDirection);
-
-        $limit = $params['limit'] ?? 10;
-        $offset = $params['offset'] ?? 0;
-
-        $posts = $query->limit($limit)
-            ->offset($offset)
-            ->get();
-
-        return $posts->map(function ($post)
-        {
-            return [
-                'id' => $post->id,
-                'title' => $post->title,
-                'text' => $post->text,
-                'user_id' => $post->user_id,
-                'created_at' => $post->created_at,
-            ];
-        })->toArray();
     }
 
     private function formatPosts(Collection $posts): array
@@ -100,38 +28,6 @@ class PostService
                 'created_at' => $post->created_at,
             ];
         })->toArray();
-    }
-
-    public function getFilteredList(array $params): array
-    {
-        $query = Post::query();
-
-        // Filter by "from" date
-        if (!empty($params['date_from']))
-        {
-            $query->whereDate('created_at', '>=', $params['date_from']);
-        }
-
-        // Filter by "before" date
-        if (!empty($params['date_to']))
-        {
-            $query->whereDate('created_at', '<=', $params['date_to']);
-        }
-
-        // Dynamic sorting (newest at the top by default)
-        $sortBy = $params['sort_by'] ?? 'created_at';
-        $sortDirection = $params['sort_direction'] ?? 'desc';
-        $query->orderBy($sortBy, $sortDirection);
-
-        // Chunking (pagination via limit/offset)
-        $limit = $params['limit'] ?? 10;
-        $offset = $params['offset'] ?? 0;
-
-        $posts = $query->limit($limit)
-            ->offset($offset)
-            ->get();
-
-        return $this->formatPosts($posts);
     }
 
     public function getFilteredList(array $params, ?User $user = null): array

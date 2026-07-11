@@ -17,11 +17,17 @@ class PostController extends Controller
         // Laravel automatically finds the user with Bearer token
         $user = $request->user();
 
-        $postData = $postService->create($user, $validatedData);
+        $post = $postService->create($user, $validatedData);
 
         return response()->json([
             'accessToken' => $request->bearerToken(), // return current token
-            'post' => $postData
+            'post' => [
+                'id' => $post->id,
+                'title' => $post->title,
+                'text' => $post->text,
+                'user_id' => $post->user_id,
+                'created_at' => $post->created_at,
+            ],
         ], 201);
     }
 }
