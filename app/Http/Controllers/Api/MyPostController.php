@@ -19,7 +19,7 @@ class MyPostController extends Controller
         $user = $request->user();
 
         // Get an array from the class
-        $posts = $postService->getUserFilteredList($params, $user);
+        $posts = $postService->getFilteredList($params, $user);
 
         return response()->json([
             'posts' => $posts,
