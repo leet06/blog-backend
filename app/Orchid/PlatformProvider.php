@@ -66,6 +66,11 @@ class PlatformProvider extends OrchidServiceProvider
                 ->route('platform.example.cards')
                 ->divider(),
 
+            Menu::make('Posts')
+                ->icon('bs.journal-text')
+                ->route('platform.posts')
+                ->title('Content'),
+
             Menu::make(__('Users'))
                 ->icon('bs.people')
                 ->route('platform.systems.users')
