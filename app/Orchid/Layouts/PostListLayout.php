@@ -47,7 +47,7 @@ class PostListLayout extends Table
             TD::make('user_id', 'Author')
                 ->render(function (Post $post) {
                     // Display the author's name if the relationship exists
-                    return $post->user?->name ?? 'Неизвестно';
+                    return $post->user?->name ?? 'Unknown';
                 }),
 
             TD::make('created_at', 'Post date')
