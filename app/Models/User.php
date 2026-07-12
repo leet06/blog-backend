@@ -6,9 +6,17 @@ use Orchid\Filters\Types\Like;
 use Orchid\Filters\Types\Where;
 use Orchid\Filters\Types\WhereDateStartEnd;
 use Orchid\Platform\Models\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
+    use HasApiTokens;
+
+    public function posts()
+    {
+        return $this->hasMany(\App\Models\Post::class);
+    }
+
     /**
      * The attributes that are mass assignable.
      *
