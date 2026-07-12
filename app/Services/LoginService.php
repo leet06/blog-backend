@@ -17,7 +17,7 @@ class LoginService
         if (!$user || !Hash::check($credentials['password'], $user->password))
         {
             throw ValidationException::withMessages([
-                'email' => ['Неверный email или пароль.'],
+                'email' => ['Invalid email or password.'],
             ]);
         }
 
