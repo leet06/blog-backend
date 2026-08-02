@@ -7,17 +7,22 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\RegisterRequest;
 use App\Services\RegisterService;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class RegisterController extends Controller
 {
-    public function __invoke(RegisterRequest $request, RegisterService $registerService): JsonResponse
+    public function __construct(
+        protected RegisterService $registerService,
+    ) {}
+
+    public function register(RegisterRequest $request): JsonResponse
     {
         $validatedData = $request->validated();
 
-        $accessToken = $registerService->execute($validatedData);
+        $accessToken = $this->registerService->execute($validatedData);
 
         return response()->json([
             'accessToken' => $accessToken,
-        ], 201);
+        ], Response::HTTP_CREATED);
     }
 }

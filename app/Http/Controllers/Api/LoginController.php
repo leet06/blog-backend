@@ -7,10 +7,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\LoginRequest;
 use App\Services\LoginService;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class LoginController extends Controller
 {
-    public function __invoke(LoginRequest $request, LoginService $loginService): JsonResponse
+    public function __construct(
+        protected RegisterService $registerService,
+    ) {}
+
+    public function login(LoginRequest $request, LoginService $loginService): JsonResponse
     {
         // Obtain the verified email and password.
         $validatedData = $request->validated();
@@ -21,6 +26,6 @@ class LoginController extends Controller
         // return JSON
         return response()->json([
             'accessToken' => $accessToken,
-        ]);
+        ], Response::HTTP_OK);
     }
 }
