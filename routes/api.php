@@ -12,12 +12,12 @@ use App\Http\Controllers\Api\MyPostController;
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
-Route::post('/login', LoginController::class);
-Route::post('/register', RegisterController::class);
-Route::get('/posts', IndexPostController::class);
+Route::post('/login', [LoginController::class, 'login']);
+Route::post('/register', [RegisterController::class, 'register']);
+Route::get('/posts', [IndexPostController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function ()
 {
-    Route::post('/posts', PostController::class);
-    Route::get('/posts/my', MyPostController::class);
+    Route::post('/posts', [PostController::class, 'store']);
+    Route::get('/posts/my', [MyPostController::class, 'index']);
 });

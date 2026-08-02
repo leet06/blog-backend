@@ -7,10 +7,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StorePostRequest;
 use App\Services\PostService;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class PostController extends Controller
 {
-    public function __invoke(StorePostRequest $request, PostService $postService): JsonResponse
+    public function __construct(
+        protected RegisterService $registerService,
+    ) {}
+
+    public function store(StorePostRequest $request, PostService $postService): JsonResponse
     {
         $validatedData = $request->validated();
 
@@ -28,6 +33,6 @@ class PostController extends Controller
                 'user_id' => $post->user_id,
                 'created_at' => $post->created_at,
             ],
-        ], 201);
+        ], Response::HTTP_CREATED);
     }
 }
