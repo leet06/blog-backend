@@ -17,23 +17,10 @@ class PostService
         ]);
     }
 
-    private function formatPosts(Collection $posts): array
+    public function getFilteredList(array $params, ?User $user = null): Collection
     {
-        return $posts->map(function ($post) {
-            return [
-                'id' => $post->id,
-                'title' => $post->title,
-                'text' => $post->text,
-                'user_id' => $post->user_id,
-                'created_at' => $post->created_at,
-            ];
-        })->toArray();
-    }
-
-    public function getFilteredList(array $params, ?User $user = null): array
-    {
-        // If a user is provided, we take only their posts; otherwise, we take all posts.
-        $query = $user ? $user->posts() : Post::query();
+        // Fetch posts (filtered by user if provided) with eager loaded author details to avoid N+1 queries.
+        $query = $user ? $user->posts()->with('user') : Post::query()->with('user');
 
         // Filter by "from" date
         if (!empty($params['date_from'])) {
@@ -54,10 +41,8 @@ class PostService
         $limit = $params['limit'] ?? 10;
         $offset = $params['offset'] ?? 0;
 
-        $posts = $query->limit($limit)
+        return $query->limit($limit)
             ->offset($offset)
             ->get();
-
-        return $this->formatPosts($posts);
     }
 }

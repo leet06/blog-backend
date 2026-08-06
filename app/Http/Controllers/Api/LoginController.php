@@ -11,9 +11,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class LoginController extends Controller
 {
-    public function __construct(
-        protected RegisterService $registerService,
-    ) {}
 
     public function login(LoginRequest $request, LoginService $loginService): JsonResponse
     {
