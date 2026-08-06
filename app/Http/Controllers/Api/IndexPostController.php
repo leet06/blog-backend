@@ -8,13 +8,10 @@ use App\Http\Requests\Api\GetPostsRequest;
 use App\Services\PostService;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Resources\PostResource;
 
 class IndexPostController extends Controller
 {
-    public function __construct(
-        protected RegisterService $registerService,
-    ) {}    
-
     public function index(GetPostsRequest $request, PostService $postService): JsonResponse
     {
         $params = $request->validated();
@@ -23,8 +20,8 @@ class IndexPostController extends Controller
         $posts = $postService->getFilteredList($params);
 
         return response()->json([
-            'posts' => $posts,
-            'count' => count($posts),
+            'posts' => PostResource::collection($posts),
+            'count' => $posts->count(),
         ], Response::HTTP_OK);
     }
 }
